@@ -1,20 +1,33 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import OrderSummary from '../OrderSummary';
+import { render, screen } from '@testing-library/react';
+import SummaryForm from '../SummaryForm';
+import userEvent from '@testing-library/user-event';
 
-test('Checkbox is unchecked by default', () => {
-  render(<OrderSummary />);
-  const checkbox = screen.getByRole('checkbox');
+test('Initial conditions', () => {
+  render(<SummaryForm />);
+  const checkbox = screen.getByRole('checkbox', {
+    name: /terms and conditions/i,
+  });
   expect(checkbox).not.toBeChecked();
+
+  const confirmButton = screen.getByRole('button', { name: /confirm order/i });
+  expect(confirmButton).toBeDisabled();
 });
 
 test('Checking checkbox enables button, unchecking checkbox disables button', () => {
-  render(<OrderSummary />);
+  render(<SummaryForm />);
   const checkbox = screen.getByRole('checkbox', {
     name: /terms and conditions/i,
   });
   const confirmButton = screen.getByRole('button', { name: /confirm order/i });
-  fireEvent.click(checkbox);
+  // use "userEvent" to replace "fireEvent"
+  userEvent.click(checkbox);
   expect(confirmButton).toBeEnabled();
-  fireEvent.click(checkbox);
+  userEvent.click(checkbox);
   expect(confirmButton).toBeDisabled();
+});
+
+test('popover responds to hover', () => {
+  // popover starts out hidden
+  // popover appears upon mouseover of checkbox label
+  // popover disappears when mouse out
 });
