@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import OrderEntry from '../OrderEntry';
 import { rest } from 'msw';
 import { server } from '../../../mocks/server';
@@ -17,11 +17,11 @@ test('handles error for scoops and toppings routes', async () => {
   // render order entry
   render(<OrderEntry />);
 
-  // async, need to hit the .catch() function in axios
-  const alerts = await screen.findAllByRole('alert', {
-    // 'alert' role is defined in react-bootstrap
-    name: 'An unexpected error ocurred, Please try again later.',
+  // async, need to hit the .catch() function in axios, but only wait for one of scoops/toppings, not both
+  // to wait for both requests, need "waitFor"
+  await waitFor(async () => {
+    // 'alert' role is defined in react-bootstrap/alert
+    const alerts = await screen.findAllByRole('alert');
+    expect(alerts).toHaveLength(2);
   });
-
-  expect(alerts).toHaveLength(2);
 });
