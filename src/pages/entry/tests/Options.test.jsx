@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../../../test-utils/testing-library-utils';
 
 import Options from '../Options';
 
 // http req is async, need to use "await" and "findBy" (cannot use "getBy")
 
 test('displays image for each scoop option from server', async () => {
+  // testing-library-utils will override "render" method, auto wrap <Options> with OrderDetailsProvider
   render(<Options optionType="scoops" />);
   // find all images by "alt" attribute, alt should end with "scoop"
   const scoopImages = await screen.findAllByRole('img', { name: /scoop$/i });

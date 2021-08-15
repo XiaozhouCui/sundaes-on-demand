@@ -1,10 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { OrderDetailsProvider } from '../../../contexts/OrderDetails';
 import Options from '../Options';
 
 // test scoop subtotal
 test('update scoop subtotal when scoops chagne', async () => {
-  render(<Options optionType="scoops" />);
+  // need to wrap <Options> inside a context/redux/router provider
+  render(<Options optionType="scoops" />, { wrapper: OrderDetailsProvider });
 
   // make sure total starts out $0.00
   const scoopsSubtotal = screen.getByText('Scoops total: $', { exact: false }); // "Scoops total: $" doesn't need to be the entire string

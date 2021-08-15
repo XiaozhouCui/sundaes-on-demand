@@ -1,4 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitFor,
+} from '../../../test-utils/testing-library-utils';
 import OrderEntry from '../OrderEntry';
 import { rest } from 'msw';
 import { server } from '../../../mocks/server';
@@ -14,7 +18,7 @@ test('handles error for scoops and toppings routes', async () => {
     )
   );
 
-  // render order entry
+  // testing-library-utils will override "render" method, auto wrap <OrderEntry> with Provider
   render(<OrderEntry />);
 
   // async, need to hit the .catch() function in axios, but only wait for one of scoops/toppings, not both
