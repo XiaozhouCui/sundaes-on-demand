@@ -50,7 +50,7 @@ test('update toppings subtotal when scoops chagne', async () => {
     name: 'Hot fudge', // from msw handlers
   });
   userEvent.click(hotFuudgeCheckbox);
-  expect(toppingsTotal).toHaveTextContent('1.50'); // 2 toppings cost $3.00
+  expect(toppingsTotal).toHaveTextContent('3.00'); // 2 toppings cost $3.00
 
   // remove hot fudge and check subtotal
   userEvent.click(hotFuudgeCheckbox);
