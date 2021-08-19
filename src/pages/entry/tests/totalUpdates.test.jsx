@@ -28,3 +28,31 @@ test('update scoop subtotal when scoops chagne', async () => {
   userEvent.type(chocolateInput, '2'); // enter text "2"
   expect(scoopsSubtotal).toHaveTextContent('6.00'); // each chocolate scoop is $2
 });
+
+// test toppings subtotal
+test('update toppings subtotal when scoops chagne', async () => {
+  // render parent component
+  render(<Options optionType="toppings" />, { wrapper: OrderDetailsProvider });
+
+  // make sure total starts out $0.00
+  const toppingsTotal = screen.getByText('Toppings total: $', { exact: false }); // match sub-string
+  expect(toppingsTotal).toHaveTextContent('0.00');
+
+  // find checkbox for Cherries, need to await to be populated by axios call
+  const cherriesCheckbox = await screen.findByRole('checkbox', {
+    name: 'Cherries', // from msw handlers
+  });
+  userEvent.click(cherriesCheckbox);
+  expect(toppingsTotal).toHaveTextContent('1.50'); // 1 topping is $1.50
+
+  // add hot fudge and check subtotal
+  const hotFuudgeCheckbox = await screen.findByRole('checkbox', {
+    name: 'Hot fudge', // from msw handlers
+  });
+  userEvent.click(hotFuudgeCheckbox);
+  expect(toppingsTotal).toHaveTextContent('1.50'); // 2 toppings cost $3.00
+
+  // remove hot fudge and check subtotal
+  userEvent.click(hotFuudgeCheckbox);
+  expect(toppingsTotal).toHaveTextContent('1.50'); // 1 Cherries topping is $1.50
+});
