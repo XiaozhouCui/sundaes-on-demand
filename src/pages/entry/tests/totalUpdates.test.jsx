@@ -1,12 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { render as rtlRender } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { OrderDetailsProvider } from '../../../contexts/OrderDetails';
 import Options from '../Options';
+import OrderEntry from '../OrderEntry';
+import { render, screen } from '../../../test-utils/testing-library-utils';
 
 // test scoop subtotal
 test('update scoop subtotal when scoops chagne', async () => {
   // need to wrap <Options> inside a context/redux/router provider
-  render(<Options optionType="scoops" />, { wrapper: OrderDetailsProvider });
+  rtlRender(<Options optionType="scoops" />, { wrapper: OrderDetailsProvider });
 
   // make sure total starts out $0.00
   const scoopsSubtotal = screen.getByText('Scoops total: $', { exact: false }); // "Scoops total: $" doesn't need to be the entire string
@@ -32,7 +34,9 @@ test('update scoop subtotal when scoops chagne', async () => {
 // test toppings subtotal
 test('update toppings subtotal when scoops chagne', async () => {
   // render parent component
-  render(<Options optionType="toppings" />, { wrapper: OrderDetailsProvider });
+  rtlRender(<Options optionType="toppings" />, {
+    wrapper: OrderDetailsProvider,
+  });
 
   // make sure total starts out $0.00
   const toppingsTotal = screen.getByText('Toppings total: $', { exact: false }); // match sub-string
@@ -55,4 +59,89 @@ test('update toppings subtotal when scoops chagne', async () => {
   // remove hot fudge and check subtotal
   userEvent.click(hotFuudgeCheckbox);
   expect(toppingsTotal).toHaveTextContent('1.50'); // 1 Cherries topping is $1.50
+});
+
+describe('grand total', () => {
+  test('grand total starts at $0.00', () => {
+    // Test that the total starts out at $0.00
+    render(<OrderEntry />);
+    const grandTotal = screen.getByRole('heading', {
+      name: /grand total: \$/i,
+    });
+    expect(grandTotal).toHaveTextContent('0.00');
+  });
+
+  test('grand total updates properly if scoop is added first', async () => {
+    render(<OrderEntry />);
+    const grandTotal = screen.getByRole('heading', {
+      name: /grand total: \$/i,
+    });
+
+    // update vanilla scoops to 2 and check grand total
+    // need to wait for the options to show up on the page
+    const vanillaInput = await screen.findByRole('spinbutton', {
+      name: 'Vanilla',
+    });
+    userEvent.clear(vanillaInput);
+    userEvent.type(vanillaInput, '2');
+    expect(grandTotal).toHaveTextContent('4.00');
+
+    // add cherries topping ($1.50) and check grand total
+    const cherriesCheckbox = await screen.findByRole('checkbox', {
+      name: 'Cherries',
+    });
+    userEvent.click(cherriesCheckbox);
+    expect(grandTotal).toHaveTextContent('5.50');
+  });
+
+  test('grand total updates properly if topping is added first', async () => {
+    render(<OrderEntry />);
+    const grandTotal = screen.getByRole('heading', {
+      name: /grand total: \$/i,
+    });
+
+    // add cherries topping ($1.50) and check grand total
+    const cherriesCheckbox = await screen.findByRole('checkbox', {
+      name: 'Cherries',
+    });
+    userEvent.click(cherriesCheckbox);
+    expect(grandTotal).toHaveTextContent('1.50');
+
+    // update vanilla scoops to 2 and check grand total
+    const vanillaInput = await screen.findByRole('spinbutton', {
+      name: 'Vanilla',
+    });
+    userEvent.clear(vanillaInput);
+    userEvent.type(vanillaInput, '2');
+    // (2 * 2 + 1.5 = $5.50)
+    expect(grandTotal).toHaveTextContent('5.50');
+  });
+
+  test('grand total updates properly if item is removed', async () => {
+    render(<OrderEntry />);
+    const grandTotal = screen.getByRole('heading', {
+      name: /grand total: \$/i,
+    });
+
+    // add cherries
+    const cherriesCheckbox = await screen.findByRole('checkbox', {
+      name: 'Cherries',
+    });
+    userEvent.click(cherriesCheckbox); // grand totaal $1.50
+
+    // update vanilla scoops to 2 and check grand total
+    const vanillaInput = await screen.findByRole('spinbutton', {
+      name: 'Vanilla',
+    });
+    userEvent.clear(vanillaInput);
+    userEvent.type(vanillaInput, '2'); // grand total $5.50
+
+    // remove 1 scoop of vanilla
+    userEvent.clear(vanillaInput);
+    userEvent.type(vanillaInput, '1'); // grand total $3.50
+
+    // remove cherries
+    userEvent.click(cherriesCheckbox); // grand total $2.00
+    expect(grandTotal).toHaveTextContent('2.00');
+  });
 });
