@@ -15,7 +15,7 @@ const OrderConfirmation = ({ setOrderPhase }) => {
         setOrderNumber(response.data.orderNumber);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   }, []);
 
@@ -30,7 +30,7 @@ const OrderConfirmation = ({ setOrderPhase }) => {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <h1>Thanks You!</h1>
+      <h1>Thank You!</h1>
       <p>Your order number is {orderNumber}</p>
       <p style={{ fontSize: '25%' }}>
         as per our terms and conditions, nothing will happen now

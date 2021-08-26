@@ -9,7 +9,7 @@ test('order phases for happy path', async () => {
   render(<App />);
 
   // add ice cream scoops and toppings
-  const vanillaInput = await screen.findAllByRole('spinbutton', {
+  const vanillaInput = await screen.findByRole('spinbutton', {
     name: 'Vanilla',
   });
   userEvent.clear(vanillaInput);
@@ -19,7 +19,7 @@ test('order phases for happy path', async () => {
   userEvent.clear(chocolateInput);
   userEvent.type(chocolateInput, '2');
 
-  const cherriesCheckbox = await screen.findAllByRole('checkbox', {
+  const cherriesCheckbox = await screen.findByRole('checkbox', {
     name: 'Cherries',
   });
   userEvent.click(cherriesCheckbox);

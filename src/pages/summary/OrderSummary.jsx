@@ -11,7 +11,7 @@ const OrderSummary = ({ setOrderPhase }) => {
     </li>
   ));
 
-  const toppingsArray = Array.from(orderDetails.toppingsArray.keys());
+  const toppingsArray = Array.from(orderDetails.toppings.keys());
   const toppingList = toppingsArray.map((key) => <li key={key}>{key}</li>);
 
   return (

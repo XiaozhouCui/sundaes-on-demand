@@ -19,7 +19,7 @@ test('handles error for scoops and toppings routes', async () => {
   );
 
   // testing-library-utils will override "render" method, auto wrap <OrderEntry> with Provider
-  render(<OrderEntry />);
+  render(<OrderEntry setOrderPhase={jest.fn()} />);
 
   // async, need to hit the .catch() function in axios, but only wait for one of scoops/toppings, not both
   // to wait for both requests, need "waitFor"
