@@ -70,7 +70,7 @@ test('order phases for happy path', async () => {
 
   // click "new order" button on confirmation page
   const newOrderButton = screen.getByRole('button', { name: /new order/i });
-  userEvent.click(newOrderButton); // this will bring you to the order page
+  userEvent.click(newOrderButton); // this will bring you to the order entry page
 
   // check that scoops and toppings subtotals have been reset
   const scoopsTotal = screen.getByText('Scoops total: $0.00');

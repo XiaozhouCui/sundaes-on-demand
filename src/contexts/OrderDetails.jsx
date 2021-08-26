@@ -65,10 +65,18 @@ export function OrderDetailsProvider(props) {
       // update state to concain this information
       setOptionCounts(newOptionCounts);
     }
-    // return an array of a getter and a setter
+
+    function resetOrder() {
+      setOptionCounts({
+        scoops: new Map(),
+        toppings: new Map(),
+      });
+    }
+
+    // return an array of 3 items: getter, setter, resetter
     // getter: object containing the option option countes for scoops and toppings, subtotals and totals
     // setter: updateOptionCount
-    return [{ ...optionCounts, totals }, updateItemCount];
+    return [{ ...optionCounts, totals }, updateItemCount, resetOrder];
   }, [optionCounts, totals]);
   return <OrderDetails.Provider value={value} {...props} />;
 }
